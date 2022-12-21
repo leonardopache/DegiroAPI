@@ -25,6 +25,8 @@ class DeGiro:
     __DATA_URL = 'https://trader.degiro.nl/trading/secure/v5/update/'
     __PRICE_DATA_URL = 'https://charting.vwdservices.com/hchart/v1/deGiro/data.js'
 
+    __ACCOUNT_OVERVIEW_URL = 'https://trader.degiro.nl/reporting/secure/v6/accountoverview'
+
     __GET_REQUEST = 0
     __POST_REQUEST = 1
     __DELETE_REQUEST = 2
@@ -316,3 +318,12 @@ class DeGiro:
         return \
             self.__request(DeGiro.__GET_STOCKS_URL, None, stock_list_params, error_message='Could not get stock list')[
                 'products']
+
+    def account_overview(self, from_date, to_date, not_executed=None):
+        orders_payload = {
+            'fromDate': from_date.strftime('%d/%m/%Y'),
+            'toDate': to_date.strftime('%d/%m/%Y'),
+            'intAccount': self.client_info.account_id,
+            'sessionId': self.session_id
+        }
+        return self.__request(DeGiro.__ACCOUNT_OVERVIEW_URL, None, orders_payload, error_message='Could not get orders.')['data']
